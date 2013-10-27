@@ -1,0 +1,16 @@
+#!/bin/bash
+
+ROOT_VHOST='/home/git/VHOST'
+
+echo '-----> Installing auto-subdomain plugin...'
+
+# Provide a default guess at the system's root domain by using its hostname.
+if [[ $(dig +short $HOSTNAME) ]]; then
+  echo "-----> Setting up root domain for automatic subdomains: $HOSTNAME"
+  echo "$HOSTNAME" > $ROOT_VHOST
+else
+  echo "-----> Hostname not resolvable for setting automatic subdomains."
+  echo "       Please manually add the root domain to: $ROOT_VHOST."
+fi
+
+cat #prints output from any plugins chained to this
