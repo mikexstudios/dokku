@@ -64,3 +64,5 @@ eval "cat <<< \"$(< $NGINX_CONF)\" >> $HOME/$APP/nginx.conf"
 pluginhook nginx-pre-reload $APP
 echo '-----> Reloading nginx...'
 nc -U $HOME/reload-nginx
+
+cat #prints output from any plugins chained to this
