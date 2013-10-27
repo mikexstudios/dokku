@@ -10,3 +10,5 @@ else
   echo "-----> Hostname not resolvable for setting automatic subdomains."
   echo "       Please manually add the root domain to: $ROOT_VHOST."
 fi
+
+cat #prints output from any plugins chained to this

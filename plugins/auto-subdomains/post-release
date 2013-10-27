@@ -33,3 +33,5 @@ if [[ -f $ROOT_VHOST_PATH ]]; then
 else
   echo "       ERROR: $ROOT_VHOST_PATH does not exist! Skipping..."
 fi
+
+cat #prints output from any plugins chained to this
