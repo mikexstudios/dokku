@@ -1,0 +1,37 @@
+#!/bin/bash
+set -e
+echo '-----> (auto-subdomains) Assigning a subdomain to app...'
+APP="$1"; IMAGE="$2"
+ROOT_VHOST_PATH="$HOME/VHOST"
+APP_VHOST_PATH="$HOME/$APP/VHOST"
+
+# Make sure the root VHOST exists
+if [[ -f $ROOT_VHOST_PATH ]]; then
+  ROOT_DOMAIN=$(< "$HOME/VHOST")
+  # If app's name contains the root domain, remove it here.
+  SUBDOMAIN="${APP/%\.${ROOT_DOMAIN}/}"
+
+  # If the app name is formatted like a fully qualified domain name
+  # where the root domain is different than the one in $ROOT_VHOST_PATH,
+  # then simply use the app name as the app's VHOST.
+  # e.g. $ git remote add progrium git@progriumapp.com:app.progrium.com
+  #      $ git push progrium master
+  #      (application will be deployed at app.progrium.com)
+  if [[ "$APP" == *.* ]] && [[ "$SUBDOMAIN" == "$APP" ]]; then
+    HOSTNAME="${APP/\//-}" #replace first / with - in $APP
+  else
+    HOSTNAME="${APP/\//-}.$VHOST"
+  fi
+
+  # Set app's VHOST if entry does not already exist.
+  if grep --quiet --fixed-strings --line-regexp "$HOSTNAME" $APP_VHOST_PATH; then
+    echo "       $HOSTNAME already set in $APP_VHOST_PATH!"
+  else
+    echo "$HOSTNAME" >> $APP_VHOST_PATH
+    echo "       Set $HOSTNAME in $APP_VHOST_PATH!"
+  fi
+else
+  echo "       ERROR: $ROOT_VHOST_PATH does not exist! Skipping..."
+fi
+
+cat #prints output from any plugins chained to this
