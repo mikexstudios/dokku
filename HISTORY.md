@@ -6,6 +6,7 @@
 * nginx-vhost plugin decoupled from domain management
 * nginx-vhost plugin supports multiple custom domains
 * nginx-vhost plugin supports overriding default configuration templates
+* Domains plugin/commands for interacting with `VHOST` files.
 
 ## 0.2.0 (2013-11-24)
 
