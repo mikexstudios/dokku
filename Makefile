@@ -2,7 +2,7 @@ DOKKU_VERSION = master
 
 SSHCOMMAND_URL ?= https://raw.github.com/progrium/sshcommand/master/sshcommand
 PLUGINHOOK_URL ?= https://s3.amazonaws.com/progrium-pluginhook/pluginhook_0.1.0_amd64.deb
-STACK_URL ?= github.com/progrium/buildstep
+STACK_URL ?= https://github.com/progrium/buildstep.git
 PREBUILT_STACK_URL ?= https://s3.amazonaws.com/progrium-dokku/progrium_buildstep_79cf6805cf.tgz
 DOKKU_ROOT ?= /home/dokku
 
@@ -41,7 +41,11 @@ docker: aufs
 	curl https://get.docker.io/gpg | apt-key add -
 	echo deb http://get.docker.io/ubuntu docker main > /etc/apt/sources.list.d/docker.list
 	apt-get update
-	apt-get install -y lxc-docker 
+ifdef DOCKER_VERSION
+	apt-get install -y lxc-docker-${DOCKER_VERSION}
+else
+	apt-get install -y lxc-docker
+endif
 	sleep 2 # give docker a moment i guess
 
 aufs:
@@ -49,7 +53,7 @@ aufs:
 
 stack:
 ifdef BUILD_STACK
-	@docker images | grep progrium/buildstep || docker build -t progrium/buildstep ${STACK_URL}
+	@docker images | grep progrium/buildstep || (git clone ${STACK_URL} /tmp/buildstep && docker build -t progrium/buildstep /tmp/buildstep && rm -rf /tmp/buildstep)
 else
 	@docker images | grep progrium/buildstep || curl ${PREBUILT_STACK_URL} | gunzip -cd | docker import - progrium/buildstep
 endif
